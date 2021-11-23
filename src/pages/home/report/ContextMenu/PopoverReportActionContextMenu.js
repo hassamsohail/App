@@ -258,6 +258,7 @@ class PopoverReportActionContextMenu extends React.Component {
                     onModalHide={this.runAndResetOnPopoverHide}
                     anchorPosition={this.state.popoverAnchorPosition}
                     animationIn="fadeIn"
+                    disableAnimation={false}
                     animationOutTiming={1}
                     measureContent={this.measureContent}
                     shouldSetModalVisibility={false}
@@ -286,6 +287,5 @@ class PopoverReportActionContextMenu extends React.Component {
 }
 
 PopoverReportActionContextMenu.propTypes = propTypes;
-PopoverReportActionContextMenu.displayName = 'PopoverReportActionContextMenu';
 
 export default withLocalize(PopoverReportActionContextMenu);
