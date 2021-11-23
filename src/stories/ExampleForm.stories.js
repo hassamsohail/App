@@ -1,5 +1,5 @@
 import React from 'react';
-import ExampleForm from '../components/ExampleForm';
+import ExampleForm from '../components/Form/ExampleForm';
 
 /**
  * We use the Component Story Format for writing stories. Follow the docs here:

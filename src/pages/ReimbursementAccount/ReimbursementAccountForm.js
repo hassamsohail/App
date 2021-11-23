@@ -13,7 +13,6 @@ import compose from '../../libs/compose';
 import ONYXKEYS from '../../ONYXKEYS';
 import FormAlertWithSubmitButton from '../../components/FormAlertWithSubmitButton';
 import CONST from '../../CONST';
-import FormInput from '../../components/FormInput';
 
 const propTypes = {
     /** ACH data for the withdrawal account actively being set up */
