@@ -4,7 +4,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {ScrollView, View} from 'react-native';
 import {withOnyx} from 'react-native-onyx';
-import withForm from '../../components/withForm';
 
 import styles from '../../styles/styles';
 import withLocalize, {withLocalizePropTypes} from '../../components/withLocalize';
@@ -49,7 +48,6 @@ class ReimbursementAccountForm extends React.Component {
                 contentContainerStyle={styles.flexGrow1}
                 keyboardShouldPersistTaps="handled"
             >
-                <FormInput onChange={this.props.onChange} />
                 {/* Form elements */}
                 <View style={[styles.mh5, styles.mb5]}>
                     {this.props.children}
@@ -73,7 +71,6 @@ ReimbursementAccountForm.propTypes = propTypes;
 ReimbursementAccountForm.defaultProps = defaultProps;
 export default compose(
     withLocalize,
-    withForm,
     withOnyx({
         reimbursementAccount: {
             key: ONYXKEYS.REIMBURSEMENT_ACCOUNT,
