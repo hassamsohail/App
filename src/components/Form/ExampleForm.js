@@ -1,12 +1,14 @@
 import React from 'react';
+import {View} from 'react-native';
 import ExpensiForm from './ExpensiForm';
 import FormInput from './FormInput';
-import {View} from 'react-native';
 import FormButton from './FormButton';
 
 class ExampleForm extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {}
     }
 
     render() {
