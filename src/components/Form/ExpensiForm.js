@@ -1,5 +1,8 @@
 import React from 'react';
 import _ from 'underscore';
+import Onyx from 'react-native-onyx';
+import compose from '../../libs/compose';
+import {withOnyx} from 'react-native-onyx';
 
 class ExpensiForm extends React.Component {
     constructor(props) {
@@ -9,11 +12,13 @@ class ExpensiForm extends React.Component {
         this.inputRefs.current = {},
 
         this.state = {
+            defaultValues: this.props.formDraft || {},
             errors: {},
         },
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.validate = this.validate.bind(this);
+        this.clearInputErrors = this.clearInputErrors.bind(this);
     }
 
     onSubmit(submit) {
@@ -28,8 +33,8 @@ class ExpensiForm extends React.Component {
         submit(formData);
     }
 
-    onChange() {
-        console.log('change');
+    onChange(e, name) {
+        Onyx.merge(`${this.props.name}_draft`, {[name]: e.target.value})
     }
 
     validate(name, rules) {
@@ -39,11 +44,21 @@ class ExpensiForm extends React.Component {
                     ...prevState,
                     errors: {
                         ...prevState.errors,
-                        [name]: _.isEmpty(prevState.errors[name]) ? [rule.message] : [...prevState.errors[name], rule.message],
+                        [name]: _.isEmpty(prevState.errors[name]) ? [rule.errorMessage] : [...prevState.errors[name], rule.errorMessage],
                     }
                 }))
             }
         })
+    }
+
+    clearInputErrors(name) {
+        this.setState(prevState => ({
+            ...prevState,
+            errors: {
+                ...prevState.errors,
+                [name]: null,
+            }
+        }));
     }
 
     render() {
@@ -70,7 +85,9 @@ class ExpensiForm extends React.Component {
                     ref: inputRef,
                     onChange: this.onChange,
                     validate: this.validate,
+                    clearInputErrors: this.clearInputErrors,
                     onSubmit: this.onSubmit,
+                    defaultValue: this.state.defaultValues[child.props.name],
                     error: this.state.errors[child.props.name],
                 })
             })
@@ -85,3 +102,8 @@ class ExpensiForm extends React.Component {
 }
 
 export default ExpensiForm;
+// export default compose(
+//     withOnyx({
+//         formDraft: {key: `${this.props.name}_draft`}
+//     }),
+// )(ExpensiForm);
