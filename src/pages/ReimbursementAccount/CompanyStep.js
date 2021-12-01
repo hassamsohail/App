@@ -23,8 +23,8 @@ import ONYXKEYS from '../../ONYXKEYS';
 import ExpensiPicker from '../../components/ExpensiPicker';
 import * as ReimbursementAccountUtils from '../../libs/ReimbursementAccountUtils';
 import reimbursementAccountPropTypes from './reimbursementAccountPropTypes';
-import ReimbursementAccountForm from './ReimbursementAccountForm';
 import AddressSearch from '../../components/AddressSearch';
+import ExpensiForm from '../../components/Form/ExpensiForm';
 
 const propTypes = {
     /** Bank account currently in setup */
@@ -58,22 +58,6 @@ class CompanyStep extends React.Component {
             incorporationState: ReimbursementAccountUtils.getDefaultStateForField(props, 'incorporationState'),
             hasNoConnectionToCannabis: ReimbursementAccountUtils.getDefaultStateForField(props, 'hasNoConnectionToCannabis', false),
         };
-
-        // These fields need to be filled out in order to submit the form
-        this.requiredFields = [
-            'companyName',
-            'addressStreet',
-            'addressCity',
-            'addressState',
-            'addressZipCode',
-            'website',
-            'companyTaxID',
-            'incorporationDate',
-            'incorporationState',
-            'incorporationType',
-            'companyPhone',
-            'hasNoConnectionToCannabis',
-        ];
 
         // Map a field to the key of the error's translation
         this.errorTranslationKeys = {
@@ -115,25 +99,6 @@ class CompanyStep extends React.Component {
     }
 
     /**
-     * @param {String} value
-     */
-    setValue(value) {
-        this.setState(value);
-        BankAccounts.updateReimbursementAccountDraft(value);
-    }
-
-    /**
-     * Clear the error associated to inputKey if found and store the inputKey new value in the state.
-     *
-     * @param {String} inputKey
-     * @param {String} value
-     */
-    clearErrorAndSetValue(inputKey, value) {
-        this.setValue({[inputKey]: value});
-        this.clearError(inputKey);
-    }
-
-    /**
      * Clear both errors associated with incorporation date, and set the new value.
      *
      * @param {String} value
@@ -142,53 +107,6 @@ class CompanyStep extends React.Component {
         this.clearError('incorporationDate');
         this.clearError('incorporationDateFuture');
         this.setValue({incorporationDate: value});
-    }
-
-    /**
-     * @returns {Boolean}
-     */
-    validate() {
-        const errors = {};
-
-        if (this.state.manualAddress) {
-            if (!ValidationUtils.isValidAddress(this.state.addressStreet)) {
-                errors.addressStreet = true;
-            }
-
-            if (!ValidationUtils.isValidZipCode(this.state.addressZipCode)) {
-                errors.addressZipCode = true;
-            }
-        }
-
-        if (!ValidationUtils.isValidURL(this.state.website)) {
-            errors.website = true;
-        }
-
-        if (!/[0-9]{9}/.test(this.state.companyTaxID)) {
-            errors.companyTaxID = true;
-        }
-
-        if (!ValidationUtils.isValidDate(this.state.incorporationDate)) {
-            errors.incorporationDate = true;
-        }
-
-        if (!ValidationUtils.isValidPastDate(this.state.incorporationDate)) {
-            errors.incorporationDateFuture = true;
-        }
-
-        if (!ValidationUtils.isValidPhoneWithSpecialChars(this.state.companyPhone)) {
-            errors.companyPhone = true;
-        }
-
-        _.each(this.requiredFields, (inputKey) => {
-            if (ValidationUtils.isRequiredFulfilled(this.state[inputKey])) {
-                return;
-            }
-
-            errors[inputKey] = true;
-        });
-        BankAccounts.setBankAccountFormValidationErrors(errors);
-        return _.size(errors) === 0;
     }
 
     submit() {
@@ -214,155 +132,157 @@ class CompanyStep extends React.Component {
                     onBackButtonPress={() => BankAccounts.goToWithdrawalAccountSetupStep(CONST.BANK_ACCOUNT.STEP.BANK_ACCOUNT)}
                     onCloseButtonPress={Navigation.dismissModal}
                 />
-                <ReimbursementAccountForm
-                    onSubmit={this.submit}
-                >
-                    <Text>{this.props.translate('companyStep.subtitle')}</Text>
-                    <ExpensiTextInput
-                        label={this.props.translate('companyStep.legalBusinessName')}
-                        containerStyles={[styles.mt4]}
-                        onChangeText={value => this.clearErrorAndSetValue('companyName', value)}
-                        value={this.state.companyName}
-                        disabled={shouldDisableCompanyName}
-                        errorText={this.getErrorText('companyName')}
-                    />
-                    {!this.state.manualAddress && (
-                        <>
-                            <AddressSearch
-                                label={this.props.translate('common.companyAddress')}
-                                containerStyles={[styles.mt4]}
-                                value={this.getFormattedAddressValue()}
-                                onChangeText={(fieldName, value) => this.clearErrorAndSetValue(fieldName, value)}
-                                errorText={this.getErrorText('addressStreet')}
-                            />
-                            <TextLink
-                                style={[styles.textMicro]}
-                                onPress={() => this.setState({manualAddress: true})}
-                            >
-                                Can&apos;t find your address? Enter it manually
-                            </TextLink>
-                        </>
-                    )}
-                    {this.state.manualAddress && (
-                        <>
-                            <ExpensiTextInput
-                                label={this.props.translate('common.companyAddress')}
-                                containerStyles={[styles.mt4]}
-                                onChangeText={value => this.clearErrorAndSetValue('addressStreet', value)}
-                                value={this.state.addressStreet}
-                                errorText={this.getErrorText('addressStreet')}
-                            />
-                            <Text style={[styles.mutedTextLabel, styles.mt1]}>{this.props.translate('common.noPO')}</Text>
-                            <View style={[styles.flexRow, styles.mt4]}>
-                                <View style={[styles.flex2, styles.mr2]}>
-                                    <ExpensiTextInput
-                                        label={this.props.translate('common.city')}
-                                        onChangeText={value => this.clearErrorAndSetValue('addressCity', value)}
-                                        value={this.state.addressCity}
-                                        errorText={this.getErrorText('addressCity')}
-                                    />
-                                </View>
-                                <View style={[styles.flex1]}>
-                                    <StatePicker
-                                        onChange={value => this.clearErrorAndSetValue('addressState', value)}
-                                        value={this.state.addressState}
-                                        hasError={this.getErrors().addressState}
-                                    />
-                                </View>
-                            </View>
-                            <ExpensiTextInput
-                                label={this.props.translate('common.zip')}
-                                containerStyles={[styles.mt4]}
-                                keyboardType={CONST.KEYBOARD_TYPE.PHONE_PAD}
-                                onChangeText={value => this.clearErrorAndSetValue('addressZipCode', value)}
-                                value={this.state.addressZipCode}
-                                errorText={this.getErrorText('addressZipCode')}
-                            />
-                        </>
-                    )}
+                <ExpensiForm
+                    name="ReimbursementAccountForm"
+                    defaultValues={this.state}
 
-                    <ExpensiTextInput
-                        label={this.props.translate('common.phoneNumber')}
-                        containerStyles={[styles.mt4]}
-                        keyboardType={CONST.KEYBOARD_TYPE.PHONE_PAD}
-                        onChangeText={value => this.clearErrorAndSetValue('companyPhone', value)}
-                        value={this.state.companyPhone}
-                        placeholder={this.props.translate('companyStep.companyPhonePlaceholder')}
-                        errorText={this.getErrorText('companyPhone')}
-                        maxLength={CONST.PHONE_MAX_LENGTH}
-                    />
-                    <ExpensiTextInput
-                        label={this.props.translate('companyStep.companyWebsite')}
-                        containerStyles={[styles.mt4]}
-                        onChangeText={value => this.clearErrorAndSetValue('website', value)}
-                        value={this.state.website}
-                        errorText={this.getErrorText('website')}
-                    />
-                    <ExpensiTextInput
-                        label={this.props.translate('companyStep.taxIDNumber')}
-                        containerStyles={[styles.mt4]}
-                        keyboardType={CONST.KEYBOARD_TYPE.NUMERIC}
-                        onChangeText={value => this.clearErrorAndSetValue('companyTaxID', value)}
-                        value={this.state.companyTaxID}
-                        disabled={shouldDisableCompanyTaxID}
-                        placeholder={this.props.translate('companyStep.taxIDNumberPlaceholder')}
-                        errorText={this.getErrorText('companyTaxID')}
-                        maxLength={CONST.BANK_ACCOUNT.MAX_LENGTH.TAX_ID_NUMBER}
-                    />
-                    <View style={styles.mt4}>
-                        <ExpensiPicker
-                            label={this.props.translate('companyStep.companyType')}
-                            items={_.map(this.props.translate('companyStep.incorporationTypes'), (label, value) => ({value, label}))}
-                            onChange={value => this.clearErrorAndSetValue('incorporationType', value)}
-                            value={this.state.incorporationType}
-                            placeholder={{value: '', label: '-'}}
-                            hasError={this.getErrors().incorporationType}
+                    // onSubmit={this.submit}
+                >
+                    <View
+                        style={[styles.mh5]}
+                    >
+                        <Text>{this.props.translate('companyStep.subtitle')}</Text>
+                        <ExpensiTextInput
+                            name="legalBusinessName"
+                            label={this.props.translate('companyStep.legalBusinessName')}
+                            containerStyles={[styles.mt4]}
+                            disabled={shouldDisableCompanyName}
                         />
-                    </View>
-                    <View style={styles.mt4}>
-                        <DatePicker
-                            label={this.props.translate('companyStep.incorporationDate')}
-                            onChange={this.clearDateErrorsAndSetValue}
-                            value={this.state.incorporationDate}
-                            placeholder={this.props.translate('companyStep.incorporationDatePlaceholder')}
-                            errorText={this.getErrorText('incorporationDate') || this.getErrorText('incorporationDateFuture')}
-                            maximumDate={new Date()}
-                        />
-                    </View>
-                    <View style={styles.mt4}>
-                        <StatePicker
-                            label={this.props.translate('companyStep.incorporationState')}
-                            onChange={value => this.clearErrorAndSetValue('incorporationState', value)}
-                            value={this.state.incorporationState}
-                            hasError={this.getErrors().incorporationState}
-                        />
-                    </View>
-                    <CheckboxWithLabel
-                        isChecked={this.state.hasNoConnectionToCannabis}
-                        onPress={() => {
-                            this.setState((prevState) => {
-                                const newState = {hasNoConnectionToCannabis: !prevState.hasNoConnectionToCannabis};
-                                BankAccounts.updateReimbursementAccountDraft(newState);
-                                return newState;
-                            });
-                            this.clearError('hasNoConnectionToCannabis');
-                        }}
-                        LabelComponent={() => (
+                        {!this.state.manualAddress && (
                             <>
-                                <Text>{`${this.props.translate('companyStep.confirmCompanyIsNot')} `}</Text>
+                                <AddressSearch
+                                    label={this.props.translate('common.companyAddress')}
+                                    containerStyles={[styles.mt4]}
+                                    value={this.getFormattedAddressValue()}
+                                    onChangeText={(fieldName, value) => this.clearErrorAndSetValue(fieldName, value)}
+                                    errorText={this.getErrorText('addressStreet')}
+                                />
                                 <TextLink
-                                    // eslint-disable-next-line max-len
-                                    href="https://community.expensify.com/discussion/6191/list-of-restricted-businesses"
+                                    style={[styles.textMicro]}
+                                    onPress={() => this.setState({manualAddress: true})}
                                 >
-                                    {`${this.props.translate('companyStep.listOfRestrictedBusinesses')}.`}
+                                    Can&apos;t find your address? Enter it manually
                                 </TextLink>
                             </>
                         )}
-                        style={[styles.mt4]}
-                        errorText={this.getErrorText('hasNoConnectionToCannabis')}
-                        hasError={this.getErrors().hasNoConnectionToCannabis}
-                    />
-                </ReimbursementAccountForm>
+                        {this.state.manualAddress && (
+                            <>
+                                <ExpensiTextInput
+                                    label={this.props.translate('common.companyAddress')}
+                                    containerStyles={[styles.mt4]}
+                                    onChangeText={value => this.clearErrorAndSetValue('addressStreet', value)}
+                                    value={this.state.addressStreet}
+                                    errorText={this.getErrorText('addressStreet')}
+                                />
+                                <Text style={[styles.mutedTextLabel, styles.mt1]}>{this.props.translate('common.noPO')}</Text>
+                                <View style={[styles.flexRow, styles.mt4]}>
+                                    <View style={[styles.flex2, styles.mr2]}>
+                                        <ExpensiTextInput
+                                            label={this.props.translate('common.city')}
+                                            onChangeText={value => this.clearErrorAndSetValue('addressCity', value)}
+                                            value={this.state.addressCity}
+                                            errorText={this.getErrorText('addressCity')}
+                                        />
+                                    </View>
+                                    <View style={[styles.flex1]}>
+                                        <StatePicker
+                                            onChange={value => this.clearErrorAndSetValue('addressState', value)}
+                                            value={this.state.addressState}
+                                            hasError={this.getErrors().addressState}
+                                        />
+                                    </View>
+                                </View>
+                                <ExpensiTextInput
+                                    label={this.props.translate('common.zip')}
+                                    containerStyles={[styles.mt4]}
+                                    keyboardType={CONST.KEYBOARD_TYPE.PHONE_PAD}
+                                    onChangeText={value => this.clearErrorAndSetValue('addressZipCode', value)}
+                                    value={this.state.addressZipCode}
+                                    errorText={this.getErrorText('addressZipCode')}
+                                />
+                            </>
+                        )}
+
+                        <ExpensiTextInput
+                            name="phoneNumber"
+                            label={this.props.translate('common.phoneNumber')}
+                            containerStyles={[styles.mt4]}
+                            keyboardType={CONST.KEYBOARD_TYPE.PHONE_PAD}
+                            placeholder={this.props.translate('companyStep.companyPhonePlaceholder')}
+                            validation={ValidationUtils.PHONE_NUMBER}
+                            maxLength={CONST.PHONE_MAX_LENGTH}
+                        />
+                        <ExpensiTextInput
+                            name="companyWebsite"
+                            label={this.props.translate('companyStep.companyWebsite')}
+                            containerStyles={[styles.mt4]}
+                            validation={[ValidationUtils.WEBSITE]} // TODO: Maybe validation prop can also accept an object in addition to arrays?
+                        />
+                        <ExpensiTextInput
+                            name="taxIDNumber"
+                            label={this.props.translate('companyStep.taxIDNumber')}
+                            containerStyles={[styles.mt4]}
+                            keyboardType={CONST.KEYBOARD_TYPE.NUMERIC}
+                            disabled={shouldDisableCompanyTaxID}
+                            placeholder={this.props.translate('companyStep.taxIDNumberPlaceholder')}
+                            maxLength={CONST.BANK_ACCOUNT.MAX_LENGTH.TAX_ID_NUMBER}
+                            validation={[ValidationUtils.TAX_ID]}
+                        />
+                        <View style={styles.mt4}>
+                            <ExpensiPicker
+                                label={this.props.translate('companyStep.companyType')}
+                                items={_.map(this.props.translate('companyStep.incorporationTypes'), (label, value) => ({value, label}))}
+                                onChange={value => this.clearErrorAndSetValue('incorporationType', value)}
+                                value={this.state.incorporationType}
+                                placeholder={{value: '', label: '-'}}
+                                hasError={this.getErrors().incorporationType}
+                            />
+                        </View>
+                        <View style={styles.mt4}>
+                            <DatePicker
+                                label={this.props.translate('companyStep.incorporationDate')}
+                                onChange={this.clearDateErrorsAndSetValue}
+                                value={this.state.incorporationDate}
+                                placeholder={this.props.translate('companyStep.incorporationDatePlaceholder')}
+                                errorText={this.getErrorText('incorporationDate') || this.getErrorText('incorporationDateFuture')}
+                                maximumDate={new Date()}
+                            />
+                        </View>
+                        <View style={styles.mt4}>
+                            <StatePicker
+                                label={this.props.translate('companyStep.incorporationState')}
+                                onChange={value => this.clearErrorAndSetValue('incorporationState', value)}
+                                value={this.state.incorporationState}
+                                hasError={this.getErrors().incorporationState}
+                            />
+                        </View>
+                        <CheckboxWithLabel
+                            isChecked={this.state.hasNoConnectionToCannabis}
+                            onPress={() => {
+                                this.setState((prevState) => {
+                                    const newState = {hasNoConnectionToCannabis: !prevState.hasNoConnectionToCannabis};
+                                    BankAccounts.updateReimbursementAccountDraft(newState);
+                                    return newState;
+                                });
+                                this.clearError('hasNoConnectionToCannabis');
+                            }}
+                            LabelComponent={() => (
+                                <>
+                                    <Text>{`${this.props.translate('companyStep.confirmCompanyIsNot')} `}</Text>
+                                    <TextLink
+                                        // eslint-disable-next-line max-len
+                                        href="https://community.expensify.com/discussion/6191/list-of-restricted-businesses"
+                                    >
+                                        {`${this.props.translate('companyStep.listOfRestrictedBusinesses')}.`}
+                                    </TextLink>
+                                </>
+                            )}
+                            style={[styles.mt4]}
+                            errorText={this.getErrorText('hasNoConnectionToCannabis')}
+                            hasError={this.getErrors().hasNoConnectionToCannabis}
+                        />
+                    </View>
+                </ExpensiForm>
             </>
         );
     }

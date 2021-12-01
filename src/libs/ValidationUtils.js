@@ -274,6 +274,27 @@ function isValidLengthForFirstOrLastName(name) {
     return name.length <= 50;
 }
 
+// TODO: Use actual validation patterns and translate errorMessage
+const REQUIRED_FIELD = {
+    pattern: /\w+/,
+    errorMessage: 'This field is required.',
+};
+
+const PHONE_NUMBER = [
+    {pattern: CONST.REGEX.PHONE_WITH_SPECIAL_CHARS, errorMessage: 'Please enter a valid phone number'},
+    {pattern: /^\d{9,15}$/, errorMessage: 'Phone numbers must be between 9 and 15 digits.'},
+];
+
+const WEBSITE = {
+    pattern: CONST.REGEX.HYPERLINK,
+    errorMessage: 'Please enter a valid URL',
+};
+
+const TAX_ID = {
+    pattern: /[0-9]{9}/,
+    errorMessage: 'Please enter a valid tax ID',
+};
+
 export {
     meetsAgeRequirements,
     isValidAddress,
@@ -293,4 +314,8 @@ export {
     isNumericWithSpecialChars,
     isValidLengthForFirstOrLastName,
     isValidPaypalUsername,
+    REQUIRED_FIELD,
+    PHONE_NUMBER,
+    WEBSITE,
+    TAX_ID,
 };
