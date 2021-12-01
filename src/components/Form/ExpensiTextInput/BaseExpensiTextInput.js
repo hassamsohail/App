@@ -17,7 +17,7 @@ class BaseExpensiTextInput extends Component {
     constructor(props) {
         super(props);
 
-        const activeLabel = props.forceActiveLabel || this.input && this.input.value.length > 0;
+        const activeLabel = props.forceActiveLabel || (this.input && this.input.value.length > 0);
 
         this.state = {
             isFocused: false,

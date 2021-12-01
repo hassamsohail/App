@@ -5,11 +5,12 @@ import FormButton from './FormButton';
 import ExpensiTextInput from './ExpensiTextInput';
 import * as validationRules from './ValidationRules';
 import styles from '../../styles/styles';
+
 class ExampleForm extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {}
+        this.state = {};
     }
 
     render() {
@@ -18,7 +19,7 @@ class ExampleForm extends React.Component {
                 name='bankAccount'
             >
                 <ExpensiTextInput
-                    name='companyName'
+                    name={'companyName'}
                     label={'Company name'}
                     validationRules={[
                         validationRules.MIN_LENGTH, // TODO: Separate common and custom errors into their own props, e.g. minLength={4}
@@ -26,44 +27,44 @@ class ExampleForm extends React.Component {
                         validationRules.ONE_DIGIT,
                     ]}
                 />
-                <ExpensiTextInput 
-                    name='address'
+                <ExpensiTextInput
+                    name={'address'}
                     label={'Stree address'}
                     containerStyles={[styles.mt4]}
                 />
-                <ExpensiTextInput 
-                    name='phoneNumber'
+                <ExpensiTextInput
+                    name={'phoneNumber'}
                     label={'Phone number'}
                     containerStyles={[styles.mt4]}
                 />
                 <ExpensiTextInput 
-                    name='companyWebsite'
+                    name={'companyWebsite'}
                     label={'Website'}
                     containerStyles={[styles.mt4]}
                 />
                 <View>
                     <ExpensiTextInput 
-                        name='companyType'
+                        name={'companyType'}
                         label={'Company type'}
                         containerStyles={[styles.mt4]}
                     />
                 </View>
                 <View>
                     <ExpensiTextInput 
-                        name='incorporationDate'
+                        name={'incorporationDate'}
                         label={'Incorporation date'}
                         containerStyles={[styles.mt4]}
                     />
                 </View>
                 <View>
                     <ExpensiTextInput 
-                        name='incorporationState'
+                        name={'incorporationState'}
                         label={'Incorporation state'}
                         containerStyles={[styles.mt4]}
                     />
                 </View>
                 <ExpensiTextInput 
-                    name='hasNoConnectionToCannabis'
+                    name={'hasNoConnectionToCannabis'}
                     label={'Checkbox'}
                     containerStyles={[styles.mt4]}
                 />
