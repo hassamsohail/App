@@ -29,9 +29,9 @@ class ExpensiForm extends React.Component {
             defaultValues: this.props.formDraft || this.props.defaultValues,
             errors: {},
         };
+        this.inputRefs = React.createRef();
         this.inputRefs.current = {};
 
-        this.inputRefs = React.createRef();
         this.saveDraft = this.saveDraft.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.validate = this.validate.bind(this);
@@ -52,8 +52,8 @@ class ExpensiForm extends React.Component {
     }
 
     // TODO: Skip saving draft if sensitive prop is passed to textInput (to prevent saving passwords, etc)
-    saveDraft(e, name) {
-        Onyx.merge(`${this.props.name}_draft`, {[name]: e.target.value});
+    saveDraft(draft) {
+        Onyx.merge(`${this.props.name}_draft`, draft);
     }
 
     // TODO: If we can pass a reference to the high level form input component, we can get a list of passed props and
@@ -62,9 +62,8 @@ class ExpensiForm extends React.Component {
     // TODO: Automatically check for required fields and other common validation rules, unless optional prop is passed
     validate(name, rules) {
         const validation = [ValidationUtils.REQUIRED_FIELD, ...rules];
-
         _.each(validation, (rule) => {
-            if (!rule.pattern.test(this.inputRefs.current[name].value)) {
+            if (rule.pattern.test(this.inputRefs.current[name].value)) {
                 return;
             }
             this.setState(prevState => ({
@@ -136,5 +135,5 @@ ExpensiForm.defaultProps = defaultProps;
 
 // export default ExpensiForm;
 export default withOnyx({
-    formDraft: {key: 'ReimbursementAccountForm_draft'},
+    formDraft: {key: 'ReimbursementAccountForm_draft'}, // TODO: Dynamic key name
 })(ExpensiForm);

@@ -84,7 +84,7 @@ class BaseExpensiTextInput extends Component {
     }
 
     onChange(event) {
-        this.props.saveDraft(event, this.props.name);
+        this.props.saveDraft({[this.props.name]: event.target.value});
     }
 
     activateLabel() {

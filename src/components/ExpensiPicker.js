@@ -18,6 +18,12 @@ const propTypes = {
 
     /** Error text to display */
     errorText: PropTypes.string,
+
+    clearInputErrors: PropTypes.func.isRequired,
+    name: PropTypes.string.isRequired,
+    validate: PropTypes.func.isRequired,
+    error: PropTypes.arrayOf(PropTypes.string).isRequired,
+    validation: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 const defaultProps = {
@@ -43,26 +49,32 @@ class ExpensiPicker extends PureComponent {
                     style={[
                         styles.expensiPickerContainer,
                         this.props.isDisabled && styles.inputDisabled,
+                        styles.borderColorDanger,
                     ]}
                 >
                     {this.props.label && (
                         <Text style={[styles.expensiPickerLabel, styles.textLabelSupporting]}>{this.props.label}</Text>
                     )}
                     <Picker
-                        onOpen={() => this.setState({isOpen: true})}
-                        onClose={() => this.setState({isOpen: false})}
+                        onOpen={() => {
+                            this.setState({isOpen: true});
+                            this.props.clearInputErrors(this.props.name);
+                        }}
+                        onClose={() => {
+                            this.setState({isOpen: false});
+                            this.props.validate(this.props.name, this.props.validation || []);
+                        }}
                         disabled={this.props.isDisabled}
                         focused={this.state.isOpen}
-                        hasError={this.props.hasError}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...pickerProps}
                     />
                 </View>
-                {!_.isEmpty(this.props.errorText) && (
+                {!_.isEmpty(this.props.error) && _.map(this.props.error, errorMessage => (
                     <InlineErrorText>
-                        {this.props.errorText}
+                        {errorMessage}
                     </InlineErrorText>
-                )}
+                ))}
             </>
         );
     }

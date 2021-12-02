@@ -7,12 +7,12 @@ import pickerStyles from './pickerStyles';
 
 const Picker = props => (
     <RNPickerSelect
-        onValueChange={props.onChange}
+        onValueChange={value => props.saveDraft({[props.name]: value})}
         items={props.items}
-        style={props.size === 'normal' ? pickerStyles(props.disabled, props.hasError, props.focused) : styles.pickerSmall}
+        style={props.size === 'normal' ? pickerStyles(props.disabled, props.error, props.focused) : styles.pickerSmall}
         useNativeAndroidPickerStyle={false}
         placeholder={props.placeholder}
-        value={props.value}
+        value={props.defaultValue} // TODO: Value changes back to defaultValue onBlur
         Icon={() => props.icon(props.size)}
         disabled={props.disabled}
         fixAndroidTouchableBug
