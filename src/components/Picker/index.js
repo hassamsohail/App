@@ -7,7 +7,7 @@ import pickerStyles from './pickerStyles';
 
 const Picker = props => (
     <RNPickerSelect
-        onValueChange={props.onValueChange}
+        onValueChange={props.onChange}
         items={props.items}
         style={props.size === 'normal' ? pickerStyles(props.disabled, props.error, props.focused) : styles.pickerSmall}
         useNativeAndroidPickerStyle={false}

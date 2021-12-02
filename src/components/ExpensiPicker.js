@@ -13,12 +13,6 @@ const propTypes = {
     /** Should the picker appear disabled? */
     isDisabled: PropTypes.bool,
 
-    /** Should the input be styled for errors  */
-    hasError: PropTypes.bool,
-
-    /** Error text to display */
-    errorText: PropTypes.string,
-
     // clearInputErrors: PropTypes.func.isRequired,
     // name: PropTypes.string.isRequired,
     // validate: PropTypes.func.isRequired,
@@ -29,8 +23,6 @@ const propTypes = {
 const defaultProps = {
     label: '',
     isDisabled: false,
-    hasError: false,
-    errorText: '',
 };
 
 class ExpensiPicker extends PureComponent {
@@ -59,11 +51,11 @@ class ExpensiPicker extends PureComponent {
                     )}
                     <Picker
                         name={this.props.name}
-                        onValueChange={(value) => {
-                            this.props.saveDraft({[this.props.name]: value});
-                            this.value = value;
-                        }}
                         value={this.value}
+                        onChange={(value) => {
+                            this.value = value;
+                            this.props.saveDraft({[this.props.name]: value});
+                        }}
                         onOpen={() => {
                             this.setState({isOpen: true});
                             this.props.clearInputErrors(this.props.name);

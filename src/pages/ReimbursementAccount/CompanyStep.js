@@ -249,9 +249,6 @@ class CompanyStep extends React.Component {
                         <StatePicker
                             name="incorporationState"
                             label={this.props.translate('companyStep.incorporationState')}
-                            onChange={value => this.clearErrorAndSetValue('incorporationState', value)}
-                            value={this.state.incorporationState}
-                            hasError={this.getErrors().incorporationState}
                         />
                     </View>
                     <CheckboxWithLabel

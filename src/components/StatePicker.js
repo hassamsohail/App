@@ -14,31 +14,22 @@ const propTypes = {
     /** The label for the field */
     label: PropTypes.string,
 
-    /** A callback method that is called when the value changes and it received the selected value as an argument */
-    onChange: PropTypes.func.isRequired,
-
-    /** The value that needs to be selected */
-    value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-
     ...withLocalizePropTypes,
 };
 
 const defaultProps = {
     label: '',
-    value: '',
 };
 
-const StatePicker = props => (
+const StatePicker = React.forwardRef((props, ref) => (
     <ExpensiPicker
+        ref={ref}
         placeholder={{value: '', label: '-'}}
         items={STATES}
-        onChange={props.onChange}
-        value={props.value}
         label={props.label || props.translate('common.state')}
-        hasError={props.hasError}
-        errorText={props.errorText}
+        {...props}
     />
-);
+));
 
 StatePicker.propTypes = propTypes;
 StatePicker.defaultProps = defaultProps;
