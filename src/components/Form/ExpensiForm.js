@@ -25,6 +25,7 @@ class ExpensiForm extends React.Component {
         super(props);
 
         // TODO: Loop over each form field and set default value to either the Onyx draft or the form default value or an empty value
+        // Update: this should be done in each form instance instead!
         this.state = {
             defaultValues: this.props.formDraft || this.props.defaultValues,
             errors: {},
