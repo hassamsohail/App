@@ -138,6 +138,7 @@ class CompanyStep extends React.Component {
 
                     // onSubmit={this.submit}
                 >
+                <View style={[styles.mh5]}>
                     <Text>{this.props.translate('companyStep.subtitle')}</Text>
                     <ExpensiTextInput
                         name="legalBusinessName"
@@ -235,6 +236,7 @@ class CompanyStep extends React.Component {
                     </View>
                     <View style={styles.mt4}>
                         <DatePicker
+                            name="incorporationDate"
                             label={this.props.translate('companyStep.incorporationDate')}
                             onChange={this.clearDateErrorsAndSetValue}
                             value={this.state.incorporationDate}
@@ -245,6 +247,7 @@ class CompanyStep extends React.Component {
                     </View>
                     <View style={styles.mt4}>
                         <StatePicker
+                            name="incorporationState"
                             label={this.props.translate('companyStep.incorporationState')}
                             onChange={value => this.clearErrorAndSetValue('incorporationState', value)}
                             value={this.state.incorporationState}
@@ -276,6 +279,7 @@ class CompanyStep extends React.Component {
                         errorText={this.getErrorText('hasNoConnectionToCannabis')}
                         hasError={this.getErrors().hasNoConnectionToCannabis}
                     />
+                    </View>
                 </ExpensiForm>
             </>
         );

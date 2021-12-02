@@ -19,11 +19,11 @@ const propTypes = {
     /** Error text to display */
     errorText: PropTypes.string,
 
-    clearInputErrors: PropTypes.func.isRequired,
-    name: PropTypes.string.isRequired,
-    validate: PropTypes.func.isRequired,
-    error: PropTypes.arrayOf(PropTypes.string).isRequired,
-    validation: PropTypes.arrayOf(PropTypes.object).isRequired,
+    // clearInputErrors: PropTypes.func.isRequired,
+    // name: PropTypes.string.isRequired,
+    // validate: PropTypes.func.isRequired,
+    // error: PropTypes.arrayOf(PropTypes.string).isRequired,
+    // validation: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 const defaultProps = {
@@ -34,11 +34,14 @@ const defaultProps = {
 };
 
 class ExpensiPicker extends PureComponent {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             isOpen: false,
         };
+
+        // We don't keep the value on state so we can read it in inputRefs.current[name].value in ExpensiForm
+        this.value = this.props.defaultValue || ''; 
     }
 
     render() {
@@ -55,6 +58,12 @@ class ExpensiPicker extends PureComponent {
                         <Text style={[styles.expensiPickerLabel, styles.textLabelSupporting]}>{this.props.label}</Text>
                     )}
                     <Picker
+                        name={this.props.name}
+                        onValueChange={(value) => {
+                            this.props.saveDraft({[this.props.name]: value});
+                            this.value = value;
+                        }}
+                        value={this.value}
                         onOpen={() => {
                             this.setState({isOpen: true});
                             this.props.clearInputErrors(this.props.name);
