@@ -135,6 +135,11 @@ class CompanyStep extends React.Component {
                 <ExpensiForm
                     name="ReimbursementAccountForm"
                     defaultValues={this.state}
+                    validation={{
+                        'phoneNumber': ValidationUtils.PHONE_NUMBER,
+                        'companyWebsite': ValidationUtils.WEBSITE,
+                        'taxIDNumber': ValidationUtils.TAX_ID,
+                    }}
 
                     // onSubmit={this.submit}
                 >
@@ -213,8 +218,7 @@ class CompanyStep extends React.Component {
                     <ExpensiTextInput
                         name="companyWebsite"
                         label={this.props.translate('companyStep.companyWebsite')}
-                        containerStyles={[styles.mt4]}
-                        validation={[ValidationUtils.WEBSITE]} // TODO: Maybe validation prop can also accept an object in addition to arrays?
+                        containerStyles={[styles.mt4]} // TODO: Maybe validation prop can also accept an object in addition to arrays?
                     />
                     <ExpensiTextInput
                         name="taxIDNumber"
@@ -224,7 +228,6 @@ class CompanyStep extends React.Component {
                         disabled={shouldDisableCompanyTaxID}
                         placeholder={this.props.translate('companyStep.taxIDNumberPlaceholder')}
                         maxLength={CONST.BANK_ACCOUNT.MAX_LENGTH.TAX_ID_NUMBER}
-                        validation={[ValidationUtils.TAX_ID]}
                     />
                     <View style={styles.mt4}>
                         <ExpensiPicker

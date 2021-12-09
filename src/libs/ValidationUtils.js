@@ -285,15 +285,15 @@ const PHONE_NUMBER = [
     {pattern: /^\d{9,15}$/, errorMessage: 'Phone numbers must be between 9 and 15 digits.'},
 ];
 
-const WEBSITE = {
+const WEBSITE = [{
     pattern: CONST.REGEX.HYPERLINK,
     errorMessage: 'Please enter a valid URL',
-};
+}];
 
-const TAX_ID = {
+const TAX_ID = [{
     pattern: /[0-9]{9}/,
     errorMessage: 'Please enter a valid tax ID',
-};
+}];
 
 export {
     meetsAgeRequirements,

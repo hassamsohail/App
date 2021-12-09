@@ -62,7 +62,7 @@ class ExpensiPicker extends PureComponent {
                         }}
                         onClose={() => {
                             this.setState({isOpen: false});
-                            this.props.validate(this.props.name, this.props.validation || []);
+                            this.props.validate(this.props.name);
                         }}
                         disabled={this.props.isDisabled}
                         focused={this.state.isOpen}

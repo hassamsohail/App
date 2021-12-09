@@ -39,6 +39,7 @@ class ExpensiForm extends React.Component {
         this.clearInputErrors = this.clearInputErrors.bind(this);
     }
 
+    // TODO: should we have an autosubmit on change option??
     onSubmit(submit) {
         // Get form values
         const formData = {};
@@ -49,6 +50,9 @@ class ExpensiForm extends React.Component {
             formData[key] = this.inputRefs.current[key].value;
         });
 
+        // Validate each field, return early if we find errors
+
+        // Set loading states, disable form, call onSubmit promise and set loading states
         submit(formData);
     }
 
@@ -61,8 +65,8 @@ class ExpensiForm extends React.Component {
     // automatically pick up validaiton rules, without needed to pass them as an argument.
     // TODO: Accept functions as validation prop?
     // TODO: Automatically check for required fields and other common validation rules, unless optional prop is passed
-    validate(name, rules) {
-        const validation = [ValidationUtils.REQUIRED_FIELD, ...rules];
+    validate(name) {
+        const validation = [ValidationUtils.REQUIRED_FIELD, ...this.props.validation[name]];
         _.each(validation, (rule) => {
             if (rule.pattern.test(this.inputRefs.current[name].value)) {
                 return;

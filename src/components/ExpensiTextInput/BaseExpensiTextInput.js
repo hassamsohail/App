@@ -80,7 +80,7 @@ class BaseExpensiTextInput extends Component {
         if (this.props.onBlur) { this.props.onBlur(event); }
         this.setState({isFocused: false});
         this.deactivateLabel();
-        this.props.validate(this.props.name, this.props.validation || []); // TODO: remove need to pass in empty array
+        this.props.validate(this.props.name);
     }
 
     onChange(event) {
